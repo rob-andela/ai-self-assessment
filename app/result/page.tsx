@@ -1,16 +1,18 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { decodeAnswersFromUrl, calculateArchetype } from '@/lib/scoring';
 import { ArchetypeResult } from '@/lib/types';
 
+const qrImageCache = new Map<string, string>();
+
 function ResultPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const qrRef = useRef<any>(null);
   const [result, setResult] = useState<ArchetypeResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
@@ -39,12 +41,37 @@ function ResultPageContent() {
   };
 
   const handleDownloadQR = () => {
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
+    const triggerDownload = (dataUrl: string) => {
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.download = `archetype-${result?.primary.toLowerCase()}-result.png`;
       link.click();
+    };
+
+    const cacheKey = window.location.href;
+    const cached = qrImageCache.get(cacheKey);
+    if (cached) {
+      triggerDownload(cached);
+      return;
+    }
+
+    if (qrRef.current) {
+      const svg = qrRef.current as unknown as SVGElement;
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new window.Image();
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        qrImageCache.set(cacheKey, dataUrl);
+        triggerDownload(dataUrl);
+      };
+
+      img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
     }
   };
 
@@ -175,6 +202,7 @@ function ResultPageContent() {
               <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Share Your Result</h3>
               <div className="bg-white p-2 sm:p-4 rounded-lg border border-border">
                 <QRCodeSVG
+                  ref={qrRef}
                   value={typeof window !== 'undefined' ? window.location.href : ''}
                   size={192}
                   level="H"
