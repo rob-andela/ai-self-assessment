@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import QRCode from 'qrcode.react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { QRCodeSVG } from 'qrcode.react';
 import { decodeAnswersFromUrl, calculateArchetype } from '@/lib/scoring';
 import { ArchetypeResult } from '@/lib/types';
 
@@ -39,10 +41,10 @@ export default function ResultPage() {
     }
   };
 
-  const archetypeColors: Record<string, { text: string; bg: string }> = {
-    Prototyper: { text: '#FF6B35', bg: '#FFF5F0' },
-    Builder: { text: '#004E89', bg: '#E8F1F8' },
-    Scaler: { text: '#2A9D8F', bg: '#E8F5F3' },
+  const archetypeColors: Record<string, { text: string; bg: string; accentBg: string }> = {
+    Prototyper: { text: '#FF6B35', bg: '#FFF5F0', accentBg: '#FFE8DD' },
+    Builder: { text: '#004E89', bg: '#E8F1F8', accentBg: '#D1E3F0' },
+    Scaler: { text: '#16A085', bg: '#E8F5F3', accentBg: '#D1EFED' },
   };
 
   if (loading) {
@@ -77,67 +79,97 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center gap-6 sm:gap-10">
+            <Link href="/" aria-label="Andela home" className="flex-shrink-0">
+              <img
+                src="/andela_logo.svg"
+                alt="Andela"
+                width="96"
+                height="25"
+                className="sm:w-[110px] h-auto"
+              />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0 bg-[#16A085]"></span>
+                  <span className="text-xs sm:text-sm font-medium text-foreground truncate">Assessment Complete</span>
+                </div>
+                <span className="text-xs text-secondary flex-shrink-0 ml-3">12/12</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-border overflow-hidden" role="progressbar" aria-valuenow="12" aria-valuemin="1" aria-valuemax="12" aria-label="Progress: assessment complete">
+                <div className="h-full rounded-full transition-all duration-500 ease-out bg-[#16A085]" style={{ width: '100%' }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-3xl">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Your AI Archetype</h1>
+          <div className="mb-10">
+            <h1 className="text-3xl md:text-4xl font-serif font-normal leading-tight text-foreground mb-4">
+              Your AI Archetype
+            </h1>
             <p className="text-secondary">Based on your technical taste assessment</p>
           </div>
 
           <div
-            className="rounded-lg p-8 mb-8 border-2"
+            className="rounded-lg p-8 mb-12 border-2"
             style={{
               borderColor: colors.text,
               backgroundColor: colors.bg,
             }}
           >
-            <div className="flex items-start gap-4 mb-6">
-              <div className="text-5xl">{archetypeEmojis[result.primary]}</div>
+            <div className="flex items-start gap-4 mb-8">
+              <div className="text-6xl">{archetypeEmojis[result.primary]}</div>
               <div>
-                <h2
-                  className="text-4xl font-bold mb-2"
-                  style={{ color: colors.text }}
-                >
+                <h2 className="text-5xl font-serif font-normal mb-3" style={{ color: colors.text }}>
                   {result.primary}
                 </h2>
                 {result.isSenior && (
-                  <div className="inline-block px-3 py-1 bg-primary text-background rounded-full text-sm font-semibold">
+                  <div
+                    className="inline-block px-4 py-2 rounded-full text-sm font-semibold text-white"
+                    style={{ backgroundColor: colors.text }}
+                  >
                     Senior / Lead Level
                   </div>
                 )}
               </div>
             </div>
 
-            <p className="text-lg leading-relaxed mb-4">
+            <p className="text-base leading-relaxed mb-6">
               <strong>Technical Taste Profile:</strong> You excel at{' '}
               {result.descriptions[result.primary]}.
             </p>
 
-            <div className="mt-6 pt-6 border-t-2" style={{ borderColor: colors.text }}>
-              <div className="grid grid-cols-3 gap-4">
+            <div className="mt-8 pt-8 border-t-2" style={{ borderColor: colors.text }}>
+              <div className="grid grid-cols-3 gap-6">
                 <div>
-                  <div className="text-sm text-secondary mb-1">Prototyper</div>
-                  <div className="text-2xl font-bold">{result.counts.P}</div>
+                  <div className="text-sm text-secondary mb-2 font-medium">Prototyper</div>
+                  <div className="text-3xl font-bold">{result.counts.P}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-secondary mb-1">Builder</div>
-                  <div className="text-2xl font-bold">{result.counts.B}</div>
+                  <div className="text-sm text-secondary mb-2 font-medium">Builder</div>
+                  <div className="text-3xl font-bold">{result.counts.B}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-secondary mb-1">Scaler</div>
-                  <div className="text-2xl font-bold">{result.counts.S}</div>
+                  <div className="text-sm text-secondary mb-2 font-medium">Scaler</div>
+                  <div className="text-3xl font-bold">{result.counts.S}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div className="flex flex-col items-center">
               <h3 className="text-lg font-semibold mb-4">Share Your Result</h3>
               <div className="bg-white p-4 rounded-lg border border-border">
-                <QRCode
-                  value={window.location.href}
+                <QRCodeSVG
+                  value={typeof window !== 'undefined' ? window.location.href : ''}
                   size={256}
                   level="H"
                   includeMargin={true}
@@ -150,17 +182,17 @@ export default function ResultPage() {
 
             <div className="flex flex-col justify-center gap-4">
               <div>
-                <h3 className="text-sm font-semibold mb-2">Permalink</h3>
-                <div className="flex gap-2">
+                <h3 className="text-sm font-semibold mb-3">Permalink</h3>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={typeof window !== 'undefined' ? window.location.href : ''}
                     readOnly
-                    className="flex-1 px-3 py-2 border border-border rounded-lg bg-accent text-sm"
+                    className="flex-1 px-3 py-2 border border-border rounded-lg bg-accent text-sm font-mono min-w-0"
                   />
                   <button
                     onClick={handleCopyLink}
-                    className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors font-medium"
+                    className="sm:flex-shrink-0 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors font-medium"
                   >
                     Copy
                   </button>

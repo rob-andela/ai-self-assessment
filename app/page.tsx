@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   decodeAnswersFromUrl,
   encodeAnswersToUrl,
@@ -47,9 +49,13 @@ export default function QuizPage() {
       if (isQuizComplete(newAnswers)) {
         const queryString = encodeAnswersToUrl(newAnswers);
         router.push(`/result?${queryString}`);
+      } else if (currentQuestion < questions.length - 1) {
+        setTimeout(() => {
+          setCurrentQuestion(currentQuestion + 1);
+        }, 300);
       }
     },
-    [answers, currentQuestion, router]
+    [answers, currentQuestion, questions.length, router]
   );
 
   const handleNext = useCallback(() => {
@@ -105,94 +111,98 @@ export default function QuizPage() {
   const currentAnswer = answers[`q${currentQuestion + 1}`];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-2xl">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-3xl font-bold">AI Archetype Assessment</h1>
-              <div className="text-sm text-secondary">
-                {currentQuestion + 1} / {questions.length}
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center gap-6 sm:gap-10">
+            <Link href="/" aria-label="Andela home" className="flex-shrink-0">
+              <img
+                src="/andela_logo.svg"
+                alt="Andela"
+                width="96"
+                height="25"
+                className="sm:w-[110px] h-auto"
+              />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0 bg-[#16A085]"></span>
+                  <span className="text-xs sm:text-sm font-medium text-foreground truncate">Question {currentQuestion + 1} of {questions.length}</span>
+                </div>
+                <span className="text-xs text-secondary flex-shrink-0 ml-3">{currentQuestion + 1}/{questions.length}</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-border overflow-hidden" role="progressbar" aria-valuenow={currentQuestion + 1} aria-valuemin="1" aria-valuemax={questions.length} aria-label={`Progress: question ${currentQuestion + 1} of ${questions.length}`}>
+                <div className="h-full rounded-full transition-all duration-500 ease-out bg-[#16A085]" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
               </div>
             </div>
+          </div>
+        </div>
+      </header>
 
-            <div className="w-full bg-border rounded-full h-2">
-              <div
-                className="bg-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              />
-            </div>
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
+        <div className="w-full max-w-2xl">
+          <div className="mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight text-foreground">
+              {question.question}
+            </h1>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-6">{question.question}</h2>
+          <div className="space-y-4 mb-12">
+            {question.answers.map((answer, index) => {
+              const archetypes = ['P', 'B', 'S'];
+              const keys = ['A', 'B', 'C'];
+              const isSelected = currentAnswer === archetypes[index];
 
-            <div className="space-y-3">
-              {question.answers.map((answer, index) => {
-                const choices = ['A', 'B', 'C'];
-                const archetypes = ['P', 'B', 'S'];
-                const isSelected = currentAnswer === archetypes[index];
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(archetypes[index] as ArchetypeType)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                      isSelected
-                        ? 'border-primary bg-accent'
-                        : 'border-border hover:border-primary'
-                    }`}
-                  >
-                    <div className="flex gap-4">
-                      <div className="flex-shrink-0 font-bold text-lg min-w-8">
-                        {choices[index]}
-                      </div>
-                      <div className="flex-1">{answer.text}</div>
-                      <div className="flex-shrink-0">
-                        {isSelected && (
-                          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <div className="w-3 h-3 rounded-full bg-background" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+              return (
+                <label
+                  key={index}
+                  className={`flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    isSelected
+                      ? 'border-[#16A085] bg-[#f0fdfb]'
+                      : 'border-border hover:border-[#16A085]'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion}`}
+                    value={archetypes[index]}
+                    checked={isSelected}
+                    onChange={() => handleAnswer(archetypes[index] as ArchetypeType)}
+                    className="mt-1 w-5 h-5 cursor-pointer"
+                  />
+                  <span className="flex-1 text-base leading-relaxed">{answer.text}</span>
+                  <div className="hidden md:flex items-center gap-2 ml-4 flex-shrink-0">
+                    <span className="text-xs text-secondary">Press</span>
+                    <kbd className="bg-accent px-2 py-1 rounded text-xs font-semibold">{keys[index]}</kbd>
+                  </div>
+                </label>
+              );
+            })}
           </div>
 
           <div className="flex items-center justify-between gap-4 pt-8 border-t border-border">
             <button
               onClick={handlePrevious}
               disabled={currentQuestion === 0}
-              className="px-6 py-2 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+              className="flex-1 px-6 py-3 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors font-medium"
             >
-              ← Previous
+              Back
             </button>
 
-            <div className="flex gap-2">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="text-xs text-secondary">
-                  {['A', 'B', 'C'][i]}
-                </div>
-              ))}
+            <div className="hidden md:block text-xs text-secondary">
+              Use <kbd className="bg-accent px-2 py-1 rounded">A</kbd>
+              <kbd className="bg-accent px-2 py-1 rounded ml-1">B</kbd>
+              <kbd className="bg-accent px-2 py-1 rounded ml-1">C</kbd>
             </div>
 
             <button
               onClick={handleNext}
               disabled={currentQuestion === questions.length - 1 || !currentAnswer}
-              className="px-6 py-2 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+              className="flex-1 px-6 py-3 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors font-medium"
             >
-              Next →
+              Next
             </button>
-          </div>
-
-          <div className="text-xs text-secondary text-center mt-6">
-            Use <kbd className="bg-accent px-2 py-1 rounded">A</kbd>
-            <kbd className="bg-accent px-2 py-1 rounded ml-1">B</kbd>
-            <kbd className="bg-accent px-2 py-1 rounded ml-1">C</kbd> to answer • Use arrow keys to
-            navigate
           </div>
         </div>
       </div>
