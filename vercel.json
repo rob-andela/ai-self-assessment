@@ -1,0 +1,6 @@
+{
+  "name": "ai-self-assessment",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "outputDirectory": ".next"
+}
