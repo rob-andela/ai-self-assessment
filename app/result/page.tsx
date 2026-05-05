@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { decodeAnswersFromUrl, calculateArchetype } from '@/lib/scoring';
 import { ArchetypeResult } from '@/lib/types';
 
-export default function ResultPage() {
+function ResultPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [result, setResult] = useState<ArchetypeResult | null>(null);
@@ -234,5 +234,19 @@ export default function ResultPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResultPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-lg">Loading result...</div>
+        </div>
+      }
+    >
+      <ResultPageContent />
+    </Suspense>
   );
 }
