@@ -14,16 +14,31 @@ const notoSerif = Noto_Serif({
   weight: ["400", "700"],
 });
 
+const QUIZ_URL = 'https://ai-self-assessment.aipoc.site';
+
 export const metadata: Metadata = {
-  title: "AI Archetype Assessment",
-  description: "Discover your AI engineering archetype - Prototyper, Builder, or Scaler",
-  icons: {
-    icon: "/favicon.png",
-  },
+  title: "AI Archetype Assessment | Andela",
+  description: "Are you a Prototyper, Builder, or Scaler? Discover your AI engineering archetype in under 5 minutes.",
+  metadataBase: new URL(QUIZ_URL),
+  icons: { icon: "/favicon.png" },
   openGraph: {
-    title: "AI Archetype Assessment",
-    description: "Discover your AI engineering archetype - Prototyper, Builder, or Scaler",
+    title: "Discover your AI Engineering Archetype",
+    description: "Are you a Prototyper, Builder, or Scaler? A 12-question assessment for AI engineers. Takes less than 5 minutes.",
+    url: QUIZ_URL,
     type: "website",
+    siteName: "AI Archetype Assessment by Andela",
+    images: [{
+      url: `${QUIZ_URL}/api/og`,
+      width: 1200,
+      height: 630,
+      alt: "AI Archetype Assessment — Prototyper, Builder, or Scaler?",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Discover your AI Engineering Archetype",
+    description: "Are you a Prototyper, Builder, or Scaler? Takes less than 5 minutes.",
+    images: [`${QUIZ_URL}/api/og`],
   },
 };
 
@@ -36,6 +51,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${notoSerif.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
