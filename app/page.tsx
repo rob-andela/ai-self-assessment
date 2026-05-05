@@ -39,15 +39,15 @@ export default function QuizPage() {
   }, [searchParams]);
 
   const handleAnswer = useCallback(
-    (archetype: ArchetypeType) => {
+    (answerIndex: number) => {
       const newAnswers = {
         ...answers,
-        [`q${currentQuestion + 1}`]: archetype,
+        [`q${currentQuestion + 1}`]: answerIndex,
       };
       setAnswers(newAnswers);
 
-      if (isQuizComplete(newAnswers)) {
-        const queryString = encodeAnswersToUrl(newAnswers);
+      if (isQuizComplete(newAnswers, questions)) {
+        const queryString = encodeAnswersToUrl(newAnswers, questions);
         router.push(`/result?${queryString}`);
       } else if (currentQuestion < questions.length - 1) {
         setTimeout(() => {
@@ -55,7 +55,7 @@ export default function QuizPage() {
         }, 300);
       }
     },
-    [answers, currentQuestion, questions.length, router]
+    [answers, currentQuestion, questions, router]
   );
 
   const handleNext = useCallback(() => {
@@ -71,25 +71,21 @@ export default function QuizPage() {
   }, [currentQuestion]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
+    if (questions.length === 0) return;
 
-      if (key === 'a') {
-        handleAnswer('P');
-      } else if (key === 'b') {
-        handleAnswer('B');
-      } else if (key === 'c') {
-        handleAnswer('S');
-      } else if (key === 'arrowright') {
-        handleNext();
-      } else if (key === 'arrowleft') {
-        handlePrevious();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key;
+      const keyNum = parseInt(key);
+      const currentQ = questions[currentQuestion];
+
+      if (keyNum >= 1 && keyNum <= 6 && keyNum <= currentQ.answers.length) {
+        handleAnswer(keyNum - 1);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleAnswer, handleNext, handlePrevious]);
+  }, [questions, currentQuestion, handleAnswer]);
 
   if (loading) {
     return (
@@ -113,26 +109,25 @@ export default function QuizPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center gap-6 sm:gap-10">
+        <div className="px-2 sm:px-6 py-2 sm:py-4">
+          <div className="flex items-center gap-3 sm:gap-10">
             <Link href="/" aria-label="Andela home" className="flex-shrink-0">
               <img
                 src="/andela_logo.svg"
                 alt="Andela"
                 width="96"
                 height="25"
-                className="sm:w-[110px] h-auto"
+                className="w-[80px] sm:w-[110px] h-auto"
               />
             </Link>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-2 h-2 rounded-full flex-shrink-0 bg-[#16A085]"></span>
-                  <span className="text-xs sm:text-sm font-medium text-foreground truncate">Question {currentQuestion + 1} of {questions.length}</span>
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-[#16A085]"></span>
+                  <span className="text-xs font-medium text-foreground truncate">Q{currentQuestion + 1}/{questions.length}</span>
                 </div>
-                <span className="text-xs text-secondary flex-shrink-0 ml-3">{currentQuestion + 1}/{questions.length}</span>
               </div>
-              <div className="h-1.5 rounded-full bg-border overflow-hidden" role="progressbar" aria-valuenow={currentQuestion + 1} aria-valuemin="1" aria-valuemax={questions.length} aria-label={`Progress: question ${currentQuestion + 1} of ${questions.length}`}>
+              <div className="h-1.5 rounded-full bg-border overflow-hidden" role="progressbar" aria-valuenow={currentQuestion + 1} aria-valuemin={1} aria-valuemax={questions.length} aria-label={`Progress: question ${currentQuestion + 1} of ${questions.length}`}>
                 <div className="h-full rounded-full transition-all duration-500 ease-out bg-[#16A085]" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
               </div>
             </div>
@@ -140,24 +135,23 @@ export default function QuizPage() {
         </div>
       </header>
 
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
-        <div className="w-full max-w-2xl">
-          <div className="mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight text-foreground">
+      <div className="flex-1 flex items-center justify-center px-2 sm:px-4 py-6 sm:py-12">
+        <div className="w-full max-w-2xl lg:max-w-4xl">
+          <div className="mb-6 sm:mb-10">
+            <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-serif font-normal leading-tight text-foreground">
               {question.question}
             </h1>
           </div>
 
-          <div className="space-y-4 mb-12">
+          <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-12">
             {question.answers.map((answer, index) => {
-              const archetypes = ['P', 'B', 'S'];
-              const keys = ['A', 'B', 'C'];
-              const isSelected = currentAnswer === archetypes[index];
+              const isSelected = currentAnswer === index;
+              const shortcutKey = index + 1;
 
               return (
                 <label
                   key={index}
-                  className={`flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  className={`flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border-2 cursor-pointer transition-all ${
                     isSelected
                       ? 'border-[#16A085] bg-[#f0fdfb]'
                       : 'border-border hover:border-[#16A085]'
@@ -166,43 +160,25 @@ export default function QuizPage() {
                   <input
                     type="radio"
                     name={`question-${currentQuestion}`}
-                    value={archetypes[index]}
+                    value={index}
                     checked={isSelected}
-                    onChange={() => handleAnswer(archetypes[index] as ArchetypeType)}
-                    className="mt-1 w-5 h-5 cursor-pointer"
+                    onChange={() => handleAnswer(index)}
+                    className="mt-1 w-5 h-5 cursor-pointer flex-shrink-0"
                   />
-                  <span className="flex-1 text-base leading-relaxed">{answer.text}</span>
-                  <div className="hidden md:flex items-center gap-2 ml-4 flex-shrink-0">
+                  <span className="flex-1 text-sm sm:text-base leading-relaxed">{answer.text}</span>
+                  <div className="flex items-center gap-2 ml-4 flex-shrink-0">
                     <span className="text-xs text-secondary">Press</span>
-                    <kbd className="bg-accent px-2 py-1 rounded text-xs font-semibold">{keys[index]}</kbd>
+                    <kbd className="bg-accent px-2 py-1 rounded text-xs font-semibold">{shortcutKey}</kbd>
                   </div>
                 </label>
               );
             })}
           </div>
 
-          <div className="flex items-center justify-between gap-4 pt-8 border-t border-border">
-            <button
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-              className="flex-1 px-6 py-3 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors font-medium"
-            >
-              Back
-            </button>
-
-            <div className="hidden md:block text-xs text-secondary">
-              Use <kbd className="bg-accent px-2 py-1 rounded">A</kbd>
-              <kbd className="bg-accent px-2 py-1 rounded ml-1">B</kbd>
-              <kbd className="bg-accent px-2 py-1 rounded ml-1">C</kbd>
+          <div className="flex items-center justify-center gap-4 pt-6 sm:pt-8 border-t border-border">
+            <div className="text-xs text-secondary text-center">
+              Press <kbd className="bg-accent px-1.5 py-0.5 rounded text-xs">1</kbd>–<kbd className="bg-accent px-1.5 py-0.5 rounded text-xs">6</kbd> or click
             </div>
-
-            <button
-              onClick={handleNext}
-              disabled={currentQuestion === questions.length - 1 || !currentAnswer}
-              className="flex-1 px-6 py-3 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors font-medium"
-            >
-              Next
-            </button>
           </div>
         </div>
       </div>

@@ -1,9 +1,22 @@
-import { ArchetypeType, ArchetypeResult, QuizAnswers } from './types';
+import { ArchetypeType, ArchetypeResult, QuizAnswers, Question } from './types';
 
-export function calculateArchetype(answers: QuizAnswers): ArchetypeResult {
+export function calculateArchetype(answers: QuizAnswers, questions?: Question[]): ArchetypeResult {
   const counts = { P: 0, B: 0, S: 0 };
 
-  Object.values(answers).forEach((archetype: ArchetypeType) => {
+  // Convert indices to archetypes if questions are provided
+  Object.entries(answers).forEach(([key, value]) => {
+    let archetype: ArchetypeType;
+
+    if (questions && typeof value === 'number') {
+      // value is an index (0-5)
+      const questionNum = parseInt(key.substring(1));
+      const question = questions[questionNum - 1];
+      archetype = question.answers[value].archetype as ArchetypeType;
+    } else {
+      // value is already an archetype letter (for backwards compatibility)
+      archetype = value as ArchetypeType;
+    }
+
     counts[archetype]++;
   });
 
@@ -20,7 +33,15 @@ export function calculateArchetype(answers: QuizAnswers): ArchetypeResult {
 
   // Check if senior/lead: consistently choosing complex tradeoff options (Q4, Q7, Q12)
   const complexQuestions = ['q4', 'q7', 'q12'];
-  const complexAnswers = complexQuestions.map((q) => answers[q]);
+  const complexAnswers = complexQuestions.map((q) => {
+    const value = answers[q];
+    if (questions && typeof value === 'number') {
+      const questionNum = parseInt(q.substring(1));
+      const question = questions[questionNum - 1];
+      return question.answers[value].archetype as ArchetypeType;
+    }
+    return value as ArchetypeType;
+  });
   const isScalerInComplex = complexAnswers.filter((a) => a === 'S').length >= 2;
   const isSenior = isScalerInComplex;
 
@@ -41,12 +62,19 @@ export function calculateArchetype(answers: QuizAnswers): ArchetypeResult {
   };
 }
 
-export function encodeAnswersToUrl(answers: QuizAnswers): string {
+export function encodeAnswersToUrl(answers: QuizAnswers, questions?: Question[]): string {
   const params = new URLSearchParams();
   for (let i = 1; i <= 12; i++) {
     const key = `q${i}`;
-    if (answers[key]) {
-      params.set(key, answers[key]);
+    if (answers[key] !== undefined) {
+      const value = answers[key];
+      // Store the archetype in URL for sharing (convert from index if needed)
+      if (questions && typeof value === 'number') {
+        const archetype = questions[i - 1].answers[value].archetype;
+        params.set(key, archetype);
+      } else {
+        params.set(key, String(value));
+      }
     }
   }
   return params.toString();
@@ -67,6 +95,6 @@ export function decodeAnswersFromUrl(queryString: string): QuizAnswers {
   return answers;
 }
 
-export function isQuizComplete(answers: QuizAnswers): boolean {
+export function isQuizComplete(answers: QuizAnswers, questions?: Question[]): boolean {
   return Object.keys(answers).length === 12;
 }

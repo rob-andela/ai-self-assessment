@@ -16,7 +16,7 @@ export interface QuestionsData {
 }
 
 export interface QuizAnswers {
-  [key: string]: ArchetypeType;
+  [key: string]: ArchetypeType | number;
 }
 
 export interface ArchetypeResult {

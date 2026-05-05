@@ -1,20 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const notoSerif = Noto_Serif({
+  variable: "--font-noto-serif",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
   title: "AI Archetype Assessment",
   description: "Discover your AI engineering archetype - Prototyper, Builder, or Scaler",
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
     title: "AI Archetype Assessment",
     description: "Discover your AI engineering archetype - Prototyper, Builder, or Scaler",
@@ -30,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${notoSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

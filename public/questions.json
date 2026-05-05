@@ -5,16 +5,28 @@
       "question": "A stakeholder asks for a \"magical\" new AI feature that hasn't been tested. Your first move is:",
       "answers": [
         {
+          "text": "Evaluate the potential token costs and latency impact against existing SLAs.",
+          "archetype": "S"
+        },
+        {
           "text": "Build a quick Streamlit UI with a mocked backend to see if the value is there.",
           "archetype": "P"
         },
         {
-          "text": "Map out the data pipelines and API schema required to make it production-ready.",
+          "text": "Design modular components that can integrate seamlessly into the existing stack.",
           "archetype": "B"
         },
         {
-          "text": "Evaluate the potential token costs and latency impact against existing SLAs.",
+          "text": "Set up a rapid testing framework to validate assumptions before committing resources.",
+          "archetype": "P"
+        },
+        {
+          "text": "Assess infrastructure requirements and create a risk mitigation plan.",
           "archetype": "S"
+        },
+        {
+          "text": "Map out the data pipelines and API schema required to make it production-ready.",
+          "archetype": "B"
         }
       ]
     },
@@ -23,16 +35,28 @@
       "question": "When choosing between a complex Agentic workflow and a simple RAG setup for a standard query task, you prioritize:",
       "answers": [
         {
+          "text": "The RAG setup—it offers more predictable costs and lower hallucination risks.",
+          "archetype": "S"
+        },
+        {
+          "text": "A hybrid approach that maintains clean architectural boundaries.",
+          "archetype": "B"
+        },
+        {
+          "text": "Experimenting with both to see which feels more natural for the use case.",
+          "archetype": "P"
+        },
+        {
+          "text": "Whichever approach has the lowest operational overhead and clearest SLAs.",
+          "archetype": "S"
+        },
+        {
           "text": "The Agentic workflow—it's more flexible for discovering edge cases.",
           "archetype": "P"
         },
         {
           "text": "The RAG setup—it's easier to integrate into the current application stack.",
           "archetype": "B"
-        },
-        {
-          "text": "The RAG setup—it offers more predictable costs and lower hallucination risks.",
-          "archetype": "S"
         }
       ]
     },
@@ -41,16 +65,28 @@
       "question": "Your preferred development environment for a new AI project is:",
       "answers": [
         {
+          "text": "A versioned repository with clear dependencies and reproducible builds.",
+          "archetype": "B"
+        },
+        {
+          "text": "An infrastructure-as-code environment with comprehensive logging and observability.",
+          "archetype": "S"
+        },
+        {
           "text": "A Jupyter Notebook or Google Colab for rapid iteration and visualization.",
           "archetype": "P"
+        },
+        {
+          "text": "A managed platform with built-in experiment tracking and drift monitoring.",
+          "archetype": "S"
         },
         {
           "text": "A local IDE with a robust CI/CD pipeline and containerization.",
           "archetype": "B"
         },
         {
-          "text": "A managed platform with built-in experiment tracking and drift monitoring.",
-          "archetype": "S"
+          "text": "An interactive environment where I can quickly prototype and visualize results.",
+          "archetype": "P"
         }
       ]
     },
@@ -59,16 +95,28 @@
       "question": "What does \"Technical Taste\" mean to you in an AI context?",
       "answers": [
         {
-          "text": "Sensing which experimental ideas will actually move the needle for the user.",
-          "archetype": "P"
+          "text": "Making decisions that scale efficiently without compromising reliability.",
+          "archetype": "S"
         },
         {
           "text": "Choosing the right architecture to ensure the system doesn't break at launch.",
           "archetype": "B"
         },
         {
+          "text": "Sensing which experimental ideas will actually move the needle for the user.",
+          "archetype": "P"
+        },
+        {
           "text": "Balancing performance, cost, and risk to maintain a sustainable system.",
           "archetype": "S"
+        },
+        {
+          "text": "Understanding what's possible and how to discover value quickly.",
+          "archetype": "P"
+        },
+        {
+          "text": "Building systems that are maintainable, testable, and extensible.",
+          "archetype": "B"
         }
       ]
     },
@@ -77,16 +125,28 @@
       "question": "You discover a high hallucination rate in a prototype. You solve it by:",
       "answers": [
         {
+          "text": "Creating a validation layer with configurable confidence thresholds and fallbacks.",
+          "archetype": "S"
+        },
+        {
+          "text": "Restructuring the pipeline to improve data quality and relevance.",
+          "archetype": "B"
+        },
+        {
           "text": "Prompt engineering and trying three different alternative models immediately.",
+          "archetype": "P"
+        },
+        {
+          "text": "Implementing a secondary \"Guardrail\" LLM to validate all outputs before they reach the user.",
+          "archetype": "S"
+        },
+        {
+          "text": "Running experiments with different prompting strategies to find what works.",
           "archetype": "P"
         },
         {
           "text": "Refining the data chunking strategy and improving the retrieval metadata.",
           "archetype": "B"
-        },
-        {
-          "text": "Implementing a secondary \"Guardrail\" LLM to validate all outputs before they reach the user.",
-          "archetype": "S"
         }
       ]
     },
@@ -95,16 +155,28 @@
       "question": "Which metric is most important for a successful AI deployment?",
       "answers": [
         {
+          "text": "Code quality, test coverage, and maintainability metrics.",
+          "archetype": "B"
+        },
+        {
+          "text": "Operational efficiency and resource utilization rates.",
+          "archetype": "S"
+        },
+        {
+          "text": "Speed to market and user feedback on the MVP.",
+          "archetype": "P"
+        },
+        {
+          "text": "Cost-per-query vs. business ROI.",
+          "archetype": "S"
+        },
+        {
           "text": "Time to Value (how fast we proved the concept).",
           "archetype": "P"
         },
         {
           "text": "System uptime and API response reliability.",
           "archetype": "B"
-        },
-        {
-          "text": "Cost-per-query vs. business ROI.",
-          "archetype": "S"
         }
       ]
     },
@@ -113,16 +185,28 @@
       "question": "Regarding data privacy and PII (Personally Identifiable Information):",
       "answers": [
         {
+          "text": "Compliance requirements dictate our entire architecture and technology choices.",
+          "archetype": "S"
+        },
+        {
+          "text": "It's important but shouldn't block innovation—we can iterate on it later.",
+          "archetype": "P"
+        },
+        {
+          "text": "We need proper data governance from day one with clear ownership.",
+          "archetype": "B"
+        },
+        {
+          "text": "It's a primary constraint that determines which models and regions we are allowed to use.",
+          "archetype": "S"
+        },
+        {
           "text": "It's a hurdle to be addressed once the core value proposition is proven.",
           "archetype": "P"
         },
         {
           "text": "It's a requirement handled through secure data pipelines and access controls.",
           "archetype": "B"
-        },
-        {
-          "text": "It's a primary constraint that determines which models and regions we are allowed to use.",
-          "archetype": "S"
         }
       ]
     },
@@ -131,16 +215,28 @@
       "question": "The project is falling behind schedule. To catch up, you would:",
       "answers": [
         {
+          "text": "Parallelize development efforts with clear interfaces and integration tests.",
+          "archetype": "B"
+        },
+        {
+          "text": "Focus on efficiency gains rather than rushing—burnout slows everything down.",
+          "archetype": "S"
+        },
+        {
+          "text": "Cut features aggressively and focus on the core user value.",
+          "archetype": "P"
+        },
+        {
+          "text": "Optimize the most expensive/slowest model calls to improve immediate performance.",
+          "archetype": "S"
+        },
+        {
           "text": "Reduce the scope to a \"lo-fi\" version to get it in front of users faster.",
           "archetype": "P"
         },
         {
           "text": "Automate the testing suite to find and fix architectural bugs more quickly.",
           "archetype": "B"
-        },
-        {
-          "text": "Optimize the most expensive/slowest model calls to improve immediate performance.",
-          "archetype": "S"
         }
       ]
     },
@@ -149,16 +245,28 @@
       "question": "Your team is debating a move to a new open-source model. You argue based on:",
       "answers": [
         {
+          "text": "The total cost of ownership including training, maintenance, and scaling.",
+          "archetype": "S"
+        },
+        {
+          "text": "How well it fits into our existing deployment and monitoring infrastructure.",
+          "archetype": "B"
+        },
+        {
+          "text": "Whether it could unlock new capabilities we haven't explored yet.",
+          "archetype": "P"
+        },
+        {
+          "text": "The long-term reduction in vendor lock-in and inference costs.",
+          "archetype": "S"
+        },
+        {
           "text": "The potential for higher \"vibe\" quality and creative output.",
           "archetype": "P"
         },
         {
           "text": "The ease of self-hosting and integration into existing Kubernetes clusters.",
           "archetype": "B"
-        },
-        {
-          "text": "The long-term reduction in vendor lock-in and inference costs.",
-          "archetype": "S"
         }
       ]
     },
@@ -167,16 +275,28 @@
       "question": "A \"Builder\" archetype is most valuable when:",
       "answers": [
         {
+          "text": "Operations and reliability are becoming critical business constraints.",
+          "archetype": "S"
+        },
+        {
+          "text": "Rapid experimentation and learning are the top priority.",
+          "archetype": "P"
+        },
+        {
+          "text": "We're transitioning from prototype to a system that can handle real users.",
+          "archetype": "B"
+        },
+        {
+          "text": "A system is already live but suffers from high latency and governance gaps.",
+          "archetype": "S"
+        },
+        {
           "text": "A company is in the \"zero to one\" phase of product discovery.",
           "archetype": "P"
         },
         {
           "text": "A validated idea needs to be turned into a scalable, end-to-end production system.",
           "archetype": "B"
-        },
-        {
-          "text": "A system is already live but suffers from high latency and governance gaps.",
-          "archetype": "S"
         }
       ]
     },
@@ -185,16 +305,28 @@
       "question": "How do you handle \"Model Drift\"?",
       "answers": [
         {
-          "text": "I re-run my best prompts to see if the \"vibe\" still feels right.",
-          "archetype": "P"
+          "text": "Implement comprehensive monitoring with automated rollback capabilities.",
+          "archetype": "S"
         },
         {
           "text": "I update the underlying data index and re-verify the integration points.",
           "archetype": "B"
         },
         {
+          "text": "I re-run my best prompts to see if the \"vibe\" still feels right.",
+          "archetype": "P"
+        },
+        {
           "text": "I set up automated observability alerts and a versioned model fallback strategy.",
           "archetype": "S"
+        },
+        {
+          "text": "Regular testing and experimentation to catch changes early.",
+          "archetype": "P"
+        },
+        {
+          "text": "Maintain clear test suites that catch regressions in behavior.",
+          "archetype": "B"
         }
       ]
     },
@@ -203,16 +335,28 @@
       "question": "In terms of seniority, when working under high ambiguity, you:",
       "answers": [
         {
+          "text": "Document assumptions and create decision gates to validate each step.",
+          "archetype": "S"
+        },
+        {
+          "text": "Create clear contracts and interfaces to handle future flexibility.",
+          "archetype": "B"
+        },
+        {
           "text": "Iterate faster to \"fail forward\" and find clarity through action.",
+          "archetype": "P"
+        },
+        {
+          "text": "Establish a rigorous governance framework to mitigate risks while the path is unclear.",
+          "archetype": "S"
+        },
+        {
+          "text": "Embrace experimentation as a way to reduce uncertainty.",
           "archetype": "P"
         },
         {
           "text": "Design modular systems that can be easily refactored as requirements change.",
           "archetype": "B"
-        },
-        {
-          "text": "Establish a rigorous governance framework to mitigate risks while the path is unclear.",
-          "archetype": "S"
         }
       ]
     }
