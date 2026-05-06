@@ -42,11 +42,16 @@ function QuizPageContent() {
     loadQuestions();
   }, [searchParams]);
 
-  // Reset keyboard focus when moving to a new question
+  // Always start focus on option 1 when entering a question (never carry over from previous)
   useEffect(() => {
-    setFocusedIndex(-1);
-    optionRefs.current = [];
-  }, [currentQuestion]);
+    if (showIntro || questions.length === 0) return;
+    setFocusedIndex(0);
+    // rAF ensures the DOM has painted before we call .focus()
+    const id = requestAnimationFrame(() => {
+      optionRefs.current[0]?.focus();
+    });
+    return () => cancelAnimationFrame(id);
+  }, [currentQuestion, showIntro, questions.length]);
 
   const handleAnswer = useCallback(
     (answerIndex: number) => {
