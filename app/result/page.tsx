@@ -10,6 +10,12 @@ const archetypeTaglines: Record<string, string> = {
   Scaler: 'I prevent the expensive failures others never see coming.',
 };
 
+const archetypeImages: Record<string, string> = {
+  Prototyper: `${QUIZ_URL}/integrator.png`,
+  Builder:    `${QUIZ_URL}/builder.png`,
+  Scaler:     `${QUIZ_URL}/scaler.png`,
+};
+
 type Props = {
   searchParams: Promise<Record<string, string | string[]>>;
 };
@@ -34,13 +40,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         url: QUIZ_URL,
         type: 'website',
         siteName: 'AI Archetype Assessment by Andela',
-        images: [{ url: `${QUIZ_URL}/api/og`, width: 1200, height: 630, alt: 'AI Archetype Assessment' }],
+        images: [{ url: `${QUIZ_URL}/builder.png`, alt: 'AI Archetype Assessment' }],
       },
       twitter: {
         card: 'summary_large_image',
         title: 'AI Archetype Assessment',
         description: 'Discover your AI engineering archetype in less than 5 minutes.',
-        images: [`${QUIZ_URL}/api/og`],
+        images: [`${QUIZ_URL}/builder.png`],
       },
     };
   }
@@ -49,7 +55,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const archetype = result.primary;
   const level = result.isSenior ? 'Senior ' : '';
   const resultUrl = `${QUIZ_URL}/result?${urlSearchParams.toString()}`;
-  const ogImageUrl = `${QUIZ_URL}/api/og?archetype=${encodeURIComponent(archetype)}&senior=${result.isSenior}`;
+  const ogImageUrl = archetypeImages[archetype];
   const description = `${archetypeTaglines[archetype]} Discover your own AI engineering archetype in under 5 minutes.`;
 
   return {
@@ -61,18 +67,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       url: resultUrl,
       type: 'website',
       siteName: 'AI Archetype Assessment by Andela',
-      images: [{
-        url: ogImageUrl,
-        width: 1200,
-        height: 630,
-        alt: `AI Archetype: ${level}${archetype}`,
-      }],
+      images: [{ url: ogImageUrl, alt: `AI Archetype: ${level}${archetype}` }],
     },
     twitter: {
       card: 'summary_large_image',
       title: `I'm a ${level}${archetype} AI Engineer`,
       description,
-      images: [ogImageUrl],
+      images: [ogImageUrl ?? ''],
     },
   };
 }

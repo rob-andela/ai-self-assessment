@@ -27,18 +27,13 @@ export const metadata: Metadata = {
     url: QUIZ_URL,
     type: "website",
     siteName: "AI Archetype Assessment by Andela",
-    images: [{
-      url: `${QUIZ_URL}/api/og`,
-      width: 1200,
-      height: 630,
-      alt: "AI Archetype Assessment — Prototyper, Builder, or Scaler?",
-    }],
+    images: [{ url: `${QUIZ_URL}/builder.png`, alt: "AI Archetype Assessment — Prototyper, Builder, or Scaler?" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Discover your AI Engineering Archetype",
     description: "Are you a Prototyper, Builder, or Scaler? Takes less than 5 minutes.",
-    images: [`${QUIZ_URL}/api/og`],
+    images: [`${QUIZ_URL}/builder.png`],
   },
 };
 
