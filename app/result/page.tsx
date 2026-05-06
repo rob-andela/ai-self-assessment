@@ -40,6 +40,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         url: QUIZ_URL,
         type: 'website',
         siteName: 'AI Archetype Assessment by Andela',
+        locale: 'en_US',
         images: [{ url: `${QUIZ_URL}/builder.png`, alt: 'AI Archetype Assessment' }],
       },
       twitter: {
@@ -61,12 +62,17 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: `I'm a ${level}${archetype} AI Engineer | AI Archetype Assessment`,
     description,
+    authors: [{ name: 'Andela', url: 'https://andela.com' }],
     openGraph: {
-      title: `I'm a ${level}${archetype} AI Engineer`,
+      title: `I'm a ${level}${archetype} AI Engineer. Discover your own AI engineering archetype in under 5 minutes.`,
       description,
       url: resultUrl,
-      type: 'website',
+      type: 'article',
       siteName: 'AI Archetype Assessment by Andela',
+      locale: 'en_US',
+      publishedTime: new Date().toISOString(),
+      modifiedTime: new Date().toISOString(),
+      authors: ['https://andela.com'],
       images: [{ url: ogImageUrl, alt: `AI Archetype: ${level}${archetype}` }],
     },
     twitter: {

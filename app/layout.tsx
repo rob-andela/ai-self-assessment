@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     url: QUIZ_URL,
     type: "website",
     siteName: "AI Archetype Assessment by Andela",
+    locale: "en_US",
     images: [{ url: `${QUIZ_URL}/builder.png`, alt: "AI Archetype Assessment — Prototyper, Builder, or Scaler?" }],
   },
   twitter: {
