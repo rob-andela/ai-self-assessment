@@ -14,7 +14,7 @@ const notoSerif = Noto_Serif({
   weight: ["400", "700"],
 });
 
-const QUIZ_URL = 'https://ai-self-assessment.aipoc.site';
+const QUIZ_URL = 'https://assess.aipoc.site';
 
 export const metadata: Metadata = {
   title: "AI Archetype Assessment | Andela",

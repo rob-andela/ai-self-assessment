@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { decodeAnswersFromUrl, calculateArchetype } from '@/lib/scoring';
 import ResultContent from './ResultContent';
 
-const QUIZ_URL = 'https://ai-self-assessment.aipoc.site';
+const QUIZ_URL = 'https://assess.aipoc.site';
 
 const archetypeTaglines: Record<string, string> = {
   Prototyper: 'I sense value before others can see it.',
